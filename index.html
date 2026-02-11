@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will you be my Valentine?</title>
+    <title>A Special Message For You</title>
     <style>
         body {
             margin: 0;
@@ -18,108 +18,135 @@
             text-align: center;
         }
 
-        h1 {
-            color: #d32f2f;
-            font-size: 2rem;
-            padding: 20px;
-            z-index: 2;
-        }
-
-        .btn-wrapper {
+        /* Password Screen Styling */
+        #password-screen {
             display: flex;
-            gap: 20px;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            width: 100%;
-            height: 100px;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        #yesBtn {
-            background-color: #ff4081;
-            color: white;
-            z-index: 100;
-        }
-
-        #noBtn {
-            background-color: #9e9e9e;
-            color: white;
-            /* Give it a starting position */
-            position: relative; 
-            z-index: 100;
-        }
-
-        #celebration {
-            display: none;
+            gap: 20px;
             padding: 20px;
         }
 
-        .couple-photo {
-            width: 80vw;
-            max-width: 300px;
-            border-radius: 20px;
-            border: 5px solid white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        #typing-text {
+            color: #d32f2f;
+            font-size: 1.8rem;
+            min-height: 3rem;
+            margin-bottom: 10px;
         }
 
-        .heart {
-            position: absolute;
-            color: #ff4081;
-            z-index: 1;
-            pointer-events: none;
+        input {
+            padding: 15px;
+            border-radius: 25px;
+            border: 2px solid #ff4081;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+            width: 200px;
         }
+
+        #passBtn {
+            background: #ff4081;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Proposal Content */
+        #main-content { display: none; }
+        h1 { color: #d32f2f; font-size: 2rem; padding: 20px; }
+        .btn-wrapper { display: flex; gap: 20px; justify-content: center; height: 100px; }
+        button { padding: 15px 30px; font-size: 1.2rem; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; }
+        #yesBtn { background-color: #ff4081; color: white; }
+        #noBtn { background-color: #9e9e9e; color: white; position: relative; }
+        #celebration { display: none; padding: 20px; }
+        .couple-photo { width: 80vw; max-width: 300px; border-radius: 20px; border: 5px solid white; }
+        .heart { position: absolute; color: #ff4081; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="main-card">
-        <h1>Will you be my Valentine? ❤️</h1>
-        <div class="btn-wrapper">
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
+    <div id="password-screen">
+        <div id="typing-text"></div>
+        <div id="input-area" style="display: none;">
+            <input type="password" id="passInput" placeholder="Password?">
+            <br><br>
+            <button id="passBtn">Unlock Heart</button>
         </div>
     </div>
 
-    <div id="celebration">
-        <h1>Yay! I love you! 🥰</h1>
-        <img src="us.jpg" alt="Us" class="couple-photo">
+    <div id="main-content">
+        <div id="main-card">
+            <h1>Will you be my Valentine? ❤️</h1>
+            <div class="btn-wrapper">
+                <button id="yesBtn">Yes</button>
+                <button id="noBtn">No</button>
+            </div>
+        </div>
+        <div id="celebration">
+            <h1>Yay! I love you! 🥰</h1>
+            <img src="us.jpg" alt="Us" class="couple-photo">
+        </div>
     </div>
 
     <script>
+        // TYPING EFFECT LOGIC
+        const text = "Hi Gorgeous... I have a secret message for you. Please enter the password to see it. ❤️";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("typing-text").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            } else {
+                document.getElementById("input-area").style.display = "block";
+            }
+        }
+        window.onload = typeWriter;
+
+        // PASSWORD LOGIC
+        const passBtn = document.getElementById('passBtn');
+        const passInput = document.getElementById('passInput');
+        const passScreen = document.getElementById('password-screen');
+        const mainContent = document.getElementById('main-content');
+
+        passBtn.addEventListener('click', () => {
+            if (passInput.value === "1234") { // Change your password here
+                passScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+            } else {
+                alert("Incorrect! Hint: It's our special code. ❤️");
+            }
+        });
+
+        // PROPOSAL LOGIC (No button run away)
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const mainCard = document.getElementById('main-card');
         const celebration = document.getElementById('celebration');
 
         function moveButton() {
-            // Calculate a safe area so it doesn't leave the screen
             const padding = 50;
             const maxX = window.innerWidth - noBtn.offsetWidth - padding;
             const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-            
             const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
             const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
-            
-            // Switch to fixed position only after first interaction
             noBtn.style.position = 'fixed';
             noBtn.style.left = `${randomX}px`;
             noBtn.style.top = `${randomY}px`;
         }
 
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); 
-            moveButton();
-        });
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
         yesBtn.addEventListener('click', () => {
             mainCard.style.display = 'none';
@@ -137,7 +164,6 @@
                     heart.style.top = '110vh';
                     heart.style.transition = 'all 3s linear';
                     document.body.appendChild(heart);
-                    
                     setTimeout(() => {
                         heart.style.transform = `translateY(-120vh) rotate(${Math.random() * 360}deg)`;
                         heart.style.opacity = '0';
